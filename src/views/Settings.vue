@@ -15,7 +15,7 @@
                   type="text"
                   class="form-control form-control-lg"
                   v-model="form.image"
-                  placeholder="URL of profile picture"
+                  placeholder="URL of profile image"
                 />
               </fieldset>
 
@@ -33,7 +33,7 @@
                   class="form-control form-control-lg"
                   v-model="form.bio"
                   placeholder="Short bio about you"
-                />
+                ></textarea>
               </fieldset>
 
               <fieldset class="form-group">
@@ -50,10 +50,9 @@
                   type="password"
                   class="form-control form-control-lg"
                   v-model="form.password"
-                  placeholder="Password"
+                  placeholder="New password"
                 />
               </fieldset>
-
               <button
                 type="submit"
                 class="btn btn-lg btn-primary pull-xs-right"
@@ -65,7 +64,7 @@
           </form>
           <hr />
           <button class="btn btn-outline-danger" @click="logout" type="text">
-            Or click here to logout
+            Or cick here to logout
           </button>
         </div>
       </div>
@@ -95,24 +94,32 @@ export default {
       currentUser: authGetterTypes.currentUser
     }),
     form() {
+      if (this.currentUser) {
+        return {
+          username: this.currentUser.username,
+          bio: this.currentUser.bio,
+          image: this.currentUser.image,
+          email: this.currentUser.email,
+          password: ''
+        }
+      }
+
       return {
-        userName: this.currentUser.username,
-        bio: this.currentUser.bio,
-        image: this.currentUser.image,
-        email: this.currentUser.email,
+        username: '',
+        bio: '',
+        image: '',
+        email: '',
         password: ''
       }
     }
   },
   methods: {
     onSubmit() {
-      console.log('submitted settings', this.form)
       this.$store.dispatch(authActionTypes.updateCurrentUser, {
         currentUserInput: this.form
       })
     },
     logout() {
-      console.log('log out')
       this.$store.dispatch(authActionTypes.logout).then(() => {
         this.$router.push({name: 'globalFeed'})
       })
